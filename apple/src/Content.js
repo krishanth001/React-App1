@@ -1,47 +1,13 @@
 import React from 'react'
-import { useState } from 'react';
 
-const Content = () => {
-
-    const [items, setUtems] = useState([
-        {
-            id:1,
-            checked : true,
-            item : "Play cricket"
-        },
-        {
-            id:1,
-            checked : true,
-            item : "Play Fifa"
-
-        },
-        {
-            id:1,
-            checked : true,
-            item : "Play Baseball"
-        }
-    ]);
-
-    const [currName , setName] = useState("made")
-
-    function changeNames(){
-    const names = ["earn", "grow", "loose", "withdraw"]
-    const int = Math.floor(Math.random() * 4);
-    setName(names[int]);
-    }
-
-    
-    const [count, setCount] = useState(99);
-
-    function increementFunction() {
-        setCount(count + 1)
-    }
-
-    function decreementFunction() {
-        setCount(count - 1)
-    }
+import { FaTrashAlt } from "react-icons/fa";
 
 
+const Content = ({
+    items, currName, count, changeNames, increementFunction, decreementFunction, handleChange, handleDelete
+}) => {
+
+  
 
   return (
   
@@ -51,16 +17,28 @@ const Content = () => {
         <button onClick={decreementFunction}>-</button>
         <span>{count}</span>
         <button onClick={increementFunction}>+</button>
-
+        {(items.length) ? (
         <ul>
         {items.map((item) => (
-            <li>
-                <input type='checkbox' checked = {item.checked} />
-            <label>{item.item}</label>
-            <button>Delete</button>
+            <li className='item' key={item.id} > 
+                <input type='checkbox' 
+                onChange={() => handleChange(item.id)}
+                checked = {item.checked} />
+            <label 
+            style = {(item.checked) ? {textDecoration : 'line-through'}: null}
+            onDoubleClick={() => handleChange(item.id)}>{item.item}</label>
+            <FaTrashAlt
+               role = "button"
+               tabIndex="0"
+               onClick={() => handleDelete(item.id)}
+               />
             </li>
         ))}        
     </ul>
+        ) : (
+            <p style={ {marginTop : '2rem'} }>  Your list is empty </p>
+        )
+    }
     </main>
   )
 }
