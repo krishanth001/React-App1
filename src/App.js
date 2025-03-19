@@ -2,28 +2,17 @@ import Header from './Header';
 import Content from './Content';
 import Footer from './Footer';
 
-import { useState } from 'react';
+import { use, useState } from 'react';
+import AddItem from './AddItem';
+import SearchItem from './SearchItem';
 
 function App() {
 
-  const [items, setItems] = useState([
-    {
-        id:1,
-        checked : true,
-        item : "Play cricket"
-    },
-    {
-        id:2,
-        checked : false,
-        item : "Play Fifa"
+  const [items, setItems] = useState(JSON.parse(localStorage.getItem('toDOhandler')));
 
-    },
-    {
-        id:3,
-        checked : false,
-        item : "Play Baseball"
-    }
-]);
+const [newItem, setNewItem] = useState('')
+
+const [Search, newSearch] = useState('')
 
 const [currName , setName] = useState("made")
 
@@ -44,6 +33,15 @@ function decreementFunction() {
     setCount(count - 1)
 }
 
+const addItem = (item) => {
+    const id = items.length ? items[items.length-1] + 1 : 1;
+    const addNewItem = {id, checked : false, item }
+    const listItems = [...items, addNewItem]
+    setItems(listItems)
+    localStorage.setItem("toDOhandler", JSON.stringify(listItems))
+ 
+}
+
 const handleChange = (id) => {
     const listItems = items.map((item) => item.id === id ? {...item, checked : !item.checked} : item)
     setItems(listItems);
@@ -57,11 +55,27 @@ const handleDelete = (id) => {
     localStorage.setItem("toDOhandler", JSON.stringify(remElements))
 }
 
+const handleSubmit = (e) => {
+    e.preventDefault()
+    if(!newItem) return;
+    // console.log(newItem)
+    addItem(newItem)
+    setNewItem('')
+}
+
   return (
     <div className='App'>
          <Header title = "Krishanth" />
+         <AddItem
+           newItem = {newItem}
+           setNewItem = {setNewItem}
+           handleSubmit = {handleSubmit}
+          />
+          <SearchItem Search = {Search}
+          newSearch = {newSearch}
+          />
          <Content 
-         items = {items}
+         items = {items.filter((item) => (item.item).toLowerCase().includes(Search.toLowerCase()))}
          currName = {currName}
          count = {count}
          changeNames = {changeNames}
